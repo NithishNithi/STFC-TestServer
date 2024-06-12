@@ -1,0 +1,13 @@
+{
+    "bearerToken": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCIsInRva2VuVHlwZSI6ImFjY2VzcyJ9.eyJuYW1lIjoiTklUSEkwMDciLCJhY2NvdW50SWQiOiJ1NDBlZWFmMzdlYjA0M2I4OGE3ZDg4ZmQ1ZTAxZTg4MCIsIm1hc3RlcklkIjoidTkyODZiMjk0ZDE0NDRhZGJjM2U5ZTRjNWExZDUwNmYiLCJpbnN0YW5jZUlkIjoyMDEsImxhbmd1YWdlIjoiZW4iLCJwcm9kdWN0Q29kZSI6InByaW1lIiwiY291bnRyeUNvZGUiOiJJTiIsInNlc3Npb25JZCI6IjkxMGVkYmIwNjgzODRjMWU4ZTRjZWEyOWZlYTExMDJjIiwiaWF0IjoxNzE4MTc2OTkzLCJleHAiOjE3MjA3Njg5OTN9.1njstW1xWdxmsq35GElIzkm7oQ4YqbNrmS7ogI773pI",
+    "bundleId10m": 1786571320,
+    "bundleId4h": 844758222,
+    "bundleId24h":  1918154038,
+    "DailyMissionKey": 787829412,
+    "OpticalDiode": 1579845062,
+    "ReplicatorRations": 1250837343,
+    "TrailBells": 718968170,
+    "NadionSupply": 1904351560,
+    "TranswarpCell": 71216663,
+    "slackWebhookURL": "https://hooks.slack.com/services/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"
+}

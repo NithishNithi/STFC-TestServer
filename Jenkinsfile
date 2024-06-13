@@ -25,18 +25,23 @@ pipeline {
 
         stage('Deploy') {
             steps {
-                sshagent(credentials: [SSH_CREDENTIALS_ID]) {
-                    // Copy files to EC2
-                    sh """
-                        scp -o StrictHostKeyChecking=no -r STFC-TestServer ec2-user@${EC2_IP}:/home/ec2-user/STFC
-                    """
-                    // Run deployment script on EC2
-                    sh """
-                        ssh -o StrictHostKeyChecking=no ec2-user@${EC2_IP} << EOF
-                        cd /home/ec2-user/STFC/STFC-TestServer
-                        ./stfc
-                        EOF
-                    """
+                script {
+                    // Log the EC2_IP to ensure it's retrieved correctly
+                    echo "EC2_IP is: ${EC2_IP}"
+
+                    sshagent(credentials: [SSH_CREDENTIALS_ID]) {
+                        // Copy files to EC2
+                        sh """
+                            scp -o StrictHostKeyChecking=no -r STFC-TestServer ec2-user@${EC2_IP}:/home/ec2-user/STFC
+                        """
+                        // Run deployment script on EC2
+                        sh """
+                            ssh -o StrictHostKeyChecking=no ec2-user@${EC2_IP} << EOF
+                            cd /home/ec2-user/STFC/STFC-TestServer
+                            ./stfc
+                            EOF
+                        """
+                    }
                 }
             }
         }

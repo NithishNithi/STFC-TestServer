@@ -7,10 +7,11 @@ pipeline {
     }
 
     stages {
-        stage('Fetch Code') {
+        stage('Clone Public Repo')
+        {
             steps {
-                // Clone your GitHub repository
-                git credentialsId: 'github-credentials', url: 'https://github.com/NithishNithi/STFC-TestServer.git'
+                git branch: 'main',
+                    url: 'https://github.com/NithishNithi/STFC-TestServer'
             }
         }
 

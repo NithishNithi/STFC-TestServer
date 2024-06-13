@@ -18,13 +18,13 @@ pipeline {
             steps {
                 script {
                     // Adjust path if necessary based on Jenkins workspace structure
-                    sshCommand = "scp -o StrictHostKeyChecking=no -i ${SSH_KEY} -r STFC-TestServer ec2-user@${EC2_INSTANCE_IP}:~/"
+                    sshCommand = "scp -o StrictHostKeyChecking=no -i ${SSH_KEY} -r STFC-TestServer ec2-user@${EC2_INSTANCE_IP}:/home/ec2-user"
                     sh sshCommand
                 }
 
                 script {
                     // SSH into EC2 instance and run the binary file
-                    sshCommand = "ssh -o StrictHostKeyChecking=no -i ${SSH_KEY} ec2-user@${EC2_INSTANCE_IP} 'cd ~/STFC-TestServer && ./stfc &'"
+                    sshCommand = "ssh -o StrictHostKeyChecking=no -i ${SSH_KEY} ec2-user@${EC2_INSTANCE_IP} 'cd /home/ec2-user/STFC-TestServer && ./stfc &'"
                     sh sshCommand
                 }
 

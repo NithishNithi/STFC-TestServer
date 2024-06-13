@@ -17,7 +17,7 @@ pipeline {
         stage('Deploy') {
             steps {
                 script {
-                    // Copy the 'STFC-TestServer' folder to EC2 instance
+                    // Adjust path if necessary based on Jenkins workspace structure
                     sshCommand = "scp -o StrictHostKeyChecking=no -i ${SSH_KEY} -r STFC-TestServer ec2-user@${EC2_INSTANCE_IP}:~/"
                     sh sshCommand
                 }

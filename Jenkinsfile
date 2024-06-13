@@ -2,7 +2,6 @@ pipeline {
     agent any
 
     environment {
-        // Remove the direct credential binding here
         SSH_CREDENTIALS_ID = 'STFC-SSH_ID' // Use the ID of the SSH credentials configured in Jenkins
         GIT_SSH_CREDENTIALS_ID = 'GITHUB-SSH' // Replace with the ID of your Git SSH credentials
     }
@@ -10,8 +9,13 @@ pipeline {
     stages {
         stage('Checkout') {
             steps {
-                sshagent(credentials: [GIT_SSH_CREDENTIALS_ID]) {
-                    sh 'git clone git@github.com:NithishNithi/STFC-TestServer.git'
+                script {
+                    // Add GitHub to known hosts
+                    sh 'ssh-keyscan github.com >> ~/.ssh/known_hosts'
+
+                    sshagent(credentials: [GIT_SSH_CREDENTIALS_ID]) {
+                        sh 'git clone git@github.com:NithishNithi/STFC-TestServer.git'
+                    }
                 }
             }
         }

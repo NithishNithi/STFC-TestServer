@@ -2,64 +2,39 @@ pipeline {
     agent any
 
     environment {
-        SSH_CREDENTIALS_ID = 'STFC-SSH_ID' // Use the ID of the SSH credentials configured in Jenkins
-        GIT_SSH_CREDENTIALS_ID = 'GITHUB-SSH' // Replace with the ID of your Git SSH credentials
+        EC2_INSTANCE_IP = credentials('EC2_IP') // Credential ID for EC2 instance IP
+        SSH_KEY = credentials('STFC-SSH_ID') // Credential ID for SSH private key
     }
 
     stages {
-        stage('Checkout') {
+        stage('Fetch Code') {
             steps {
-                script {
-                    // Add GitHub to known hosts
-                    sh 'ssh-keyscan github.com >> ~/.ssh/known_hosts'
-
-                    sshagent(credentials: [GIT_SSH_CREDENTIALS_ID]) {
-                        sh 'git clone git@github.com:NithishNithi/STFC-TestServer.git'
-                    }
-                }
-            }
-        }
-
-        stage('Build') {
-            steps {
-                echo 'Building the project...'
-                sh 'echo "Building..."' // Replace with your actual build commands
+                // Clone your GitHub repository
+                git credentialsId: 'github-credentials', url: 'https://github.com/NithishNithi/STFC-TestServer.git'
             }
         }
 
         stage('Deploy') {
             steps {
+                // Copy the 'STFC-TestServer' folder to EC2 instance
                 script {
-                    // Use withCredentials block for EC2_IP
-                    withCredentials([string(credentialsId: 'EC2_IP', variable: 'EC2_IP')]) {
-                        // Log the EC2_IP to ensure it's retrieved correctly
-                        echo "EC2_IP is: ${EC2_IP}"
+                    sshCommand = "scp -i ${SSH_KEY} -r STFC-TestServer ec2-user@${EC2_INSTANCE_IP}:~/"
+                    sh sshCommand
+                }
 
-                        sshagent(credentials: [SSH_CREDENTIALS_ID]) {
-                            // Copy files to EC2
-                            sh """
-                                scp -o StrictHostKeyChecking=no -r STFC-TestServer ec2-user@${EC2_IP}:/home/ec2-user/STFC
-                            """
-                            // Run deployment script on EC2
-                            sh """
-                                ssh -o StrictHostKeyChecking=no ec2-user@${EC2_IP} << EOF
-                                cd /home/ec2-user/STFC/STFC-TestServer
-                                ./stfc
-                                EOF
-                            """
-                        }
-                    }
+                // SSH into EC2 instance and run the binary file
+                script {
+                    sshCommand = "ssh -i ${SSH_KEY} ec2-user@${EC2_INSTANCE_IP} 'cd ~/STFC-TestServer && ./stfc &'"
+                    sh sshCommand
+                }
+
+                // Check running process on EC2 instance (optional)
+                script {
+                    sshCommand = "ssh -i ${SSH_KEY} ec2-user@${EC2_INSTANCE_IP} 'pgrep -fl stfc'"
+                    result = sh(script: sshCommand, returnStdout: true).trim()
+                    echo "Running process: ${result}"
                 }
             }
-        }
-    }
-
-    post {
-        success {
-            echo 'Deployment successful!'
-        }
-        failure {
-            echo 'Deployment failed.'
         }
     }
 }
